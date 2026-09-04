@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<!--
+  使い捨てプロトタイプ（本番コードではありません）
+  問い: Q15「画面構成」— 単一画面（A）か複数画面（B）か。
+  形態: UIプロトタイプ / サブパターンB相当（既存ページが存在しないため単一HTMLに直に実装）。
+        下部フローティングバーで ?variant= を切り替え（URL保持・←/→キー対応）。
+        バリアントは2つ（Q15が二者択一のため第3案は捏造しない）。
+  起動: このファイルをダブルクリックで開くだけ。
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q15 プロトタイプ — 画面構成（単一画面 vs 複数画面）</title>
+<style>
+  :root { --accent:#e3350d; --ink:#2a2a33; --muted:#8a8a96; --line:#e4e4ea; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; padding:32px 16px 120px;
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,sans-serif;
+    color:var(--ink); background:#fafafa; line-height:1.6;
+  }
+  .col { max-width:640px; margin:0 auto; }
+  .prototype-note {
+    border:2px dashed var(--accent); border-radius:12px; padding:12px 16px;
+    font-size:13px; color:var(--accent); background:#fff5f2; margin-bottom:28px;
+  }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,.05); }
+  h1 { font-size:20px; margin:0 0 6px; }
+  h2 { font-size:16px; margin:0 0 12px; }
+  .muted { color:var(--muted); font-size:13px; }
+  .label { font-size:12px; color:var(--muted); letter-spacing:.05em; }
+  .badge {
+    display:inline-block; padding:7px 20px; border-radius:999px;
+    color:#fff; font-weight:700; font-size:15px; text-shadow:0 1px 2px rgba(0,0,0,.45);
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,.2);
+  }
+  .effect-chip {
+    display:inline-block; padding:5px 18px; border-radius:999px; font-weight:700; font-size:15px;
+    background:#fff; border:2px solid var(--line); color:var(--ink);
+  }
+  .effect-chip .mark { font-size:16px; margin-right:4px; }
+  .options { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:14px 0; }
+  button { font-family:inherit; cursor:pointer; }
+  .opt {
+    padding:12px 8px; border-radius:10px; border:2px solid rgba(0,0,0,.12);
+    font-size:15px; font-weight:700; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.45);
+    box-shadow:inset 0 -2px 0 rgba(0,0,0,.2);
+    transition:border-color .1s, box-shadow .1s;
+  }
+  .opt:hover { border-color:rgba(0,0,0,.4); }
+  .opt.selected { border-color:var(--accent); box-shadow:0 0 0 3px rgba(227,53,13,.35), inset 0 -2px 0 rgba(0,0,0,.15); }
+  .opt.correct { border-color:#2aa856; box-shadow:0 0 0 3px rgba(42,168,86,.5), inset 0 -2px 0 rgba(0,0,0,.15); }
+  .opt.wrongpick { opacity:.5; }
+  .opt:disabled { cursor:default; }
+  .actions { display:flex; gap:10px; margin-top:16px; }
+  .btn {
+    padding:12px 28px; border-radius:10px; border:none; background:var(--accent);
+    color:#fff; font-size:16px; font-weight:700;
+  }
+  .btn:disabled { background:#d5d5dc; cursor:default; }
+  .btn-sub {
+    padding:12px 20px; border-radius:10px; border:2px solid var(--line);
+    background:#fff; color:var(--ink); font-size:14px; font-weight:700;
+  }
+  .feedback { margin-top:16px; padding:16px; border-radius:10px; font-weight:700; }
+  .feedback.ok { background:#eafbf0; color:#1c7c3f; border:2px solid #2aa856; }
+  .feedback.ng { background:#fdf0f0; color:#c0392b; border:2px solid #e08a83; }
+  .feedback .msg { font-size:17px; margin-bottom:6px; }
+  .state-line {
+    margin-top:20px; font-family:ui-monospace,Menlo,monospace; font-size:12px; color:var(--muted);
+    border-top:1px dashed var(--line); padding-top:10px;
+  }
+  /* バリアントB: 複数画面 */
+  .screen-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .title-screen { text-align:center; padding:48px 24px; }
+  .title-screen .logo { font-size:30px; font-weight:900; color:var(--accent); margin:0 0 12px; letter-spacing:.02em; }
+  .title-screen .desc { color:var(--muted); font-size:14px; margin-bottom:28px; }
+  .result-screen { text-align:center; padding:64px 24px; }
+  .fade { animation:fade .18s ease-out; }
+  @keyframes fade { from { opacity:0; transform:translateY(4px);} to { opacity:1; transform:none;} }
+  /* フローティングスイッチャー */
+  .switcher {
+    position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; gap:10px;
+    background:#1f2430; color:#fff; border-radius:999px; padding:8px 12px;
+    box-shadow:0 6px 24px rgba(0,0,0,.35); z-index:100;
+  }
+  .switcher .arrow {
+    width:34px; height:34px; border-radius:50%; border:none; background:#3a4152; color:#fff;
+    font-size:16px; font-weight:700;
+  }
+  .switcher .arrow:hover { background:#4a5266; }
+  .switcher .vlabel { font-size:13px; font-weight:700; min-width:230px; text-align:center; }
+  .switcher .vlabel small { display:block; font-weight:400; color:#9aa3b5; font-size:11px; }
+</style>
+</head>
+<body>
+<div class="col">
+  <div class="prototype-note">
+    ⚠️ 使い捨てプロトタイプ — Q15（画面構成）を検証するためのものです。クイズ自体は実仕様どおりに動きます。
+    下部のバー（または ← / → キー）で <b>A: 単一画面</b> / <b>B: 複数画面</b> を切り替えて比較してください。
+  </div>
+  <div id="app"></div>
+</div>
+<div class="switcher" id="switcher"></div>
+
+<script>
+'use strict';
+
+/* ===== 相性表（第9世代基準・ハードコード）。攻める側 → 守る側 → 倍率（1倍のみ省略） ===== */
+const TYPES = ['ノーマル','ほのお','みず','でんき','くさ','こおり','かくとう','どく','じめん','ひこう','エスパー','むし','いわ','ゴースト','ドラゴン','あく','はがね','フェアリー'];
+const COLORS = { /* 公式準拠: ゲーム内タイプアイコン由来の標準パレット */
+  'ノーマル':'#A8A878','ほのお':'#F08030','みず':'#6890F0','でんき':'#F8D030','くさ':'#78C850',
+  'こおり':'#98D8D8','かくとう':'#C03028','どく':'#A040A0','じめん':'#E0C068','ひこう':'#A890F0',
+  'エスパー':'#F85888','むし':'#A8B820','いわ':'#B8A038','ゴースト':'#705898','ドラゴン':'#7038F8',
+  'あく':'#705848','はがね':'#B8B8D0','フェアリー':'#EE99AC'
+};
+const CHART = {
+  'ノーマル':{'いわ':.5,'はがね':.5,'ゴースト':0},
+  'ほのお':{'ほのお':.5,'くさ':2,'こおり':2,'むし':2,'はがね':2,'いわ':.5,'みず':.5,'ドラゴン':.5},
+  'みず':{'ほのお':2,'じめん':2,'いわ':2,'みず':.5,'くさ':.5,'ドラゴン':.5},
+  'でんき':{'みず':2,'ひこう':2,'でんき':.5,'くさ':.5,'ドラゴン':.5,'じめん':0},
+  'くさ':{'みず':2,'じめん':2,'いわ':2,'ほのお':.5,'くさ':.5,'どく':.5,'ひこう':.5,'むし':.5,'ドラゴン':.5,'はがね':.5},
+  'こおり':{'くさ':2,'じめん':2,'ひこう':2,'ドラゴン':2,'ほのお':.5,'みず':.5,'こおり':.5,'はがね':.5},
+  'かくとう':{'ノーマル':2,'こおり':2,'いわ':2,'あく':2,'はがね':2,'どく':.5,'ひこう':.5,'むし':.5,'エスパー':.5,'フェアリー':.5,'ゴースト':0},
+  'どく':{'くさ':2,'フェアリー':2,'どく':.5,'じめん':.5,'いわ':.5,'ゴースト':.5,'はがね':0},
+  'じめん':{'ほのお':2,'でんき':2,'どく':2,'いわ':2,'はがね':2,'くさ':.5,'むし':.5,'ひこう':0},
+  'ひこう':{'くさ':2,'かくとう':2,'むし':2,'でんき':.5,'いわ':.5,'はがね':.5},
+  'エスパー':{'かくとう':2,'どく':2,'エスパー':.5,'はがね':.5,'あく':0},
+  'むし':{'くさ':2,'エスパー':2,'あく':2,'ほのお':.5,'かくとう':.5,'どく':.5,'ひこう':.5,'ゴースト':.5,'はがね':.5,'フェアリー':.5},
+  'いわ':{'ほのお':2,'こおり':2,'ひこう':2,'むし':2,'かくとう':.5,'じめん':.5,'はがね':.5},
+  'ゴースト':{'エスパー':2,'ゴースト':2,'あく':.5,'ノーマル':0},
+  'ドラゴン':{'ドラゴン':2,'はがね':.5,'フェアリー':0},
+  'あく':{'エスパー':2,'ゴースト':2,'かくとう':.5,'あく':.5,'フェアリー':.5},
+  'はがね':{'こおり':2,'いわ':2,'フェアリー':2,'ほのお':.5,'みず':.5,'でんき':.5,'はがね':.5},
+  'フェアリー':{'かくとう':2,'ドラゴン':2,'あく':2,'ほのお':.5,'どく':.5,'はがね':.5}
+};
+const effect = (atk, def) => (CHART[atk] && CHART[atk][def] !== undefined) ? CHART[atk][def] : 1;
+const EFF_LABEL = { 2:'ばつぐん', 0.5:'いまひとつ', 0:'こうかなし' };
+const EFF_MARK  = { 2:'◎', 0.5:'△', 0:'×' };
+const EFF_MSG   = { 2:'効果はばつぐんだ！', 0.5:'効果はいまひとつだ', 0:'こうかがない' };
+
+/* ===== 出題ロジック（実仕様: 該当タイプ1つ以上＋残りこうかあり、直前重複排除） ===== */
+const rnd = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { const b=[...a]; for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+
+function genQuestion(prev) {
+  let q;
+  do {
+    const def = rnd(TYPES);
+    const byEff = { 1:[], 2:[], 0.5:[], 0:[] }; // 1=こうかあり（選択肢の残り枠）
+    for (const t of TYPES) byEff[effect(t, def)].push(t);
+    const eff = rnd([2, 0.5, 0].filter(e => byEff[e].length > 0));
+    let answers = byEff[eff].slice();
+    if (answers.length > 5) answers = shuffle(answers).slice(0, 5); // 選択肢は6つなので該当は最大5
+    const fillers = [];
+    while (answers.length + fillers.length < 6) {
+      const t = rnd(byEff[1]);
+      if (!fillers.includes(t)) fillers.push(t);
+    }
+    q = { def, eff, answers: shuffle(answers), options: shuffle([...answers, ...fillers]) };
+  } while (prev && prev.def === q.def && prev.eff === q.eff);
+  return q;
+}
+
+const badge = t => `<span class="badge" style="background:${COLORS[t]}">${t}</span>`;
+const sameSet = (a, b) => a.length === b.length && a.every(x => b.includes(x));
+
+/* ===== バリアントA: 単一画面（ルーティングなし・1ページで完結） ===== */
+const stateA = { q: genQuestion(null), selected: [], revealed: false };
+
+function renderA(el) {
+  const { q, selected, revealed } = stateA;
+  const correct = revealed && sameSet(selected, q.answers);
+  el.innerHTML = `
+    <div class="card fade">
+      <h1>ポケモンタイプ相性クイズ</h1>
+      <p class="muted">守る側のお題に対して、当てはまる攻める側のタイプをすべて選んで「答え合わせ」。<br>正解は複数あることがあります（完全一致で正解）。</p>
+      <hr style="border:none;border-top:1px solid var(--line);margin:16px 0">
+      <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <div><div class="label">お題（守る側）</div>${badge(q.def)}</div>
+        <div><div class="label">攻める側の効果</div><span class="effect-chip"><span class="mark">${EFF_MARK[q.eff]}</span>${EFF_LABEL[q.eff]}</span></div>
+      </div>
+      <div class="options">
+        ${q.options.map(t => `
+          <button class="opt ${selected.includes(t) ? 'selected' : ''} ${revealed && q.answers.includes(t) ? 'correct' : ''} ${revealed && !q.answers.includes(t) && selected.includes(t) ? 'wrongpick' : ''}"
+                  style="background:${COLORS[t]}" data-t="${t}" ${revealed ? 'disabled' : ''}>${t}</button>`).join('')}
+      </div>
+      <div class="actions">
+        <button class="btn" id="check" ${revealed || selected.length === 0 ? 'disabled' : ''}>答え合わせ</button>
+        ${revealed ? '<button class="btn-sub" id="next">次の問題 →</button>' : ''}
+      </div>
+      ${revealed ? `
+        <div class="feedback ${correct ? 'ok' : 'ng'}">
+          <div class="msg">${correct ? '⭕ 正解！' : '❌ はずれ…'}</div>
+          <div>お題 ${q.def} に対して${EFF_MARK[q.eff]}${EFF_LABEL[q.eff]}の攻める側：</div>
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${q.answers.map(badge).join(' ')}</div>
+          <div class="muted" style="margin-top:8px">「${EFF_MSG[q.eff]}」</div>
+        </div>` : ''}
+      <div class="state-line">状態: お題=${q.def} / 効果=${EFF_MARK[q.eff]}${EFF_LABEL[q.eff]} / 選択=${selected.length}個 / 答え合わせ=${revealed ? '済' : '未'} / 画面遷移=なし（常にこの1枚）</div>
+    </div>`;
+  el.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    const t = b.dataset.t;
+    stateA.selected = stateA.selected.includes(t) ? stateA.selected.filter(x => x !== t) : [...stateA.selected, t];
+    renderA(el);
+  });
+  const check = el.querySelector('#check');
+  if (check) check.onclick = () => { stateA.revealed = true; renderA(el); };
+  const next = el.querySelector('#next');
+  if (next) next.onclick = () => {
+    stateA.q = genQuestion(stateA.q); stateA.selected = []; stateA.revealed = false; renderA(el);
+  };
+}
+
+/* ===== バリアントB: 複数画面（タイトル → クイズ → 結果。画面切り替えあり） ===== */
+const stateB = { screen: 'title', q: null, selected: [], revealed: false };
+
+function renderB(el) {
+  if (stateB.screen === 'title') {
+    el.innerHTML = `
+      <div class="card title-screen fade">
+        <p class="logo">ポケモンタイプ相性クイズ</p>
+        <p class="desc">守る側のお題に対して、攻める側のタイプをすべて選ぶクイズ。<br>endlessモード・点数なし。</p>
+        <button class="btn" id="start">▶ スタート</button>
+        <div class="state-line">状態: 画面=タイトル</div>
+      </div>`;
+    el.querySelector('#start').onclick = () => {
+      stateB.q = genQuestion(null); stateB.selected = []; stateB.revealed = false; stateB.screen = 'quiz'; renderB(el);
+    };
+    return;
+  }
+  if (stateB.screen === 'result') {
+    el.innerHTML = `
+      <div class="card result-screen fade">
+        <h1>おつかれさまでした！</h1>
+        <p class="muted">endlessモードのため、記録はありません。</p>
+        <div class="actions" style="justify-content:center">
+          <button class="btn-sub" id="toTitle">タイトルへもどる</button>
+        </div>
+        <div class="state-line">状態: 画面=終了（挨拶のみ。endlessモードのため実績表示なし）</div>
+      </div>`;
+    el.querySelector('#toTitle').onclick = () => { stateB.screen = 'title'; renderB(el); };
+    return;
+  }
+  const { q, selected, revealed } = stateB;
+  const correct = revealed && sameSet(selected, q.answers);
+  el.innerHTML = `
+    <div class="card fade">
+      <div class="screen-head">
+        <h1 style="margin:0">ポケモンタイプ相性クイズ</h1>
+        <button class="btn-sub" id="quit" style="padding:6px 14px;font-size:13px">やめる</button>
+      </div>
+      <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <div><div class="label">お題（守る側）</div>${badge(q.def)}</div>
+        <div><div class="label">攻める側の効果</div><span class="effect-chip"><span class="mark">${EFF_MARK[q.eff]}</span>${EFF_LABEL[q.eff]}</span></div>
+      </div>
+      <div class="options">
+        ${q.options.map(t => `
+          <button class="opt ${selected.includes(t) ? 'selected' : ''} ${revealed && q.answers.includes(t) ? 'correct' : ''} ${revealed && !q.answers.includes(t) && selected.includes(t) ? 'wrongpick' : ''}"
+                  style="background:${COLORS[t]}" data-t="${t}" ${revealed ? 'disabled' : ''}>${t}</button>`).join('')}
+      </div>
+      <div class="actions">
+        <button class="btn" id="check" ${revealed || selected.length === 0 ? 'disabled' : ''}>答え合わせ</button>
+        ${revealed ? '<button class="btn-sub" id="next">次の問題 →</button>' : ''}
+      </div>
+      ${revealed ? `
+        <div class="feedback ${correct ? 'ok' : 'ng'}">
+          <div class="msg">${correct ? '⭕ 正解！' : '❌ はずれ…'}</div>
+          <div>お題 ${q.def} に対して${EFF_MARK[q.eff]}${EFF_LABEL[q.eff]}の攻める側：</div>
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${q.answers.map(badge).join(' ')}</div>
+          <div class="muted" style="margin-top:8px">「${EFF_MSG[q.eff]}」</div>
+        </div>` : ''}
+      <div class="state-line">状態: 画面=クイズ / お題=${q.def} / 効果=${EFF_MARK[q.eff]}${EFF_LABEL[q.eff]} / 選択=${selected.length}個 / 答え合わせ=${revealed ? '済' : '未'}</div>
+    </div>`;
+  el.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    const t = b.dataset.t;
+    stateB.selected = stateB.selected.includes(t) ? stateB.selected.filter(x => x !== t) : [...stateB.selected, t];
+    renderB(el);
+  });
+  const check = el.querySelector('#check');
+  if (check) check.onclick = () => { stateB.revealed = true; renderB(el); };
+  const next = el.querySelector('#next');
+  if (next) next.onclick = () => {
+    stateB.q = genQuestion(stateB.q); stateB.selected = []; stateB.revealed = false; renderB(el);
+  };
+  el.querySelector('#quit').onclick = () => { stateB.screen = 'result'; renderB(el); };
+}
+
+/* ===== フローティングスイッチャー（?variant= でURL保持・←/→キー対応） ===== */
+const VARIANTS = [
+  { key:'A', name:'単一画面', desc:'ルーティングなし。1ページで完結' },
+  { key:'B', name:'複数画面', desc:'タイトル → クイズ → 終了の3画面構成' }
+];
+let current = new URLSearchParams(location.search).get('variant') === 'B' ? 'B' : 'A';
+
+function setVariant(v) {
+  current = v;
+  try {
+    const p = new URLSearchParams(location.search);
+    p.set('variant', v);
+    history.replaceState(null, '', location.pathname + '?' + p.toString());
+  } catch (_) { /* file:// ではreplaceStateが拒否されるブラウザがあるため無視 */ }
+  render();
+}
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  (current === 'A' ? renderA : renderB)(app);
+  const idx = VARIANTS.findIndex(v => v.key === current);
+  const v = VARIANTS[idx];
+  document.getElementById('switcher').innerHTML = `
+    <button class="arrow" id="prev" title="前のバリアント">←</button>
+    <div class="vlabel">${v.key} — ${v.name}<small>${v.desc}</small></div>
+    <button class="arrow" id="nextv" title="次のバリアント">→</button>`;
+  document.getElementById('prev').onclick = () => setVariant(VARIANTS[(idx - 1 + VARIANTS.length) % VARIANTS.length].key);
+  document.getElementById('nextv').onclick = () => setVariant(VARIANTS[(idx + 1) % VARIANTS.length].key);
+}
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement?.tagName) || document.activeElement?.isContentEditable) return;
+  if (e.key === 'ArrowLeft')  setVariant(VARIANTS[(VARIANTS.findIndex(v => v.key === current) - 1 + VARIANTS.length) % VARIANTS.length].key);
+  if (e.key === 'ArrowRight') setVariant(VARIANTS[(VARIANTS.findIndex(v => v.key === current) + 1) % VARIANTS.length].key);
+});
+render();
+</script>
+</body>
+</html>
