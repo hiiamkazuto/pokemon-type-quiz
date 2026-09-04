@@ -15,3 +15,17 @@
 - **要点だけに絞る** — 結果、決定事項、およびユーザーが対応すべき事項のみを報告すること。注意点や但し書きは次の行動に影響する場合のみ言及し、見出し、表、箇条書きは単なる飾りとして使わないこと。
 - **重要な情報は省略しない** — エラーログ、テスト失敗の出力、セキュリティ警告、破壊的操作の確認などは、簡潔さを理由に省略・要約せず完全な内容を提示すること。
 - **要求に応じて詳細を述べる** — 理由、経緯、詳細を求められた場合は、簡潔さよりも網羅性を優先し、必要な情報を出し惜しみせず説明すること。
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues（`gh` コマンド）でIssueを管理する。詳細は `docs/agents/issue-tracker.md` を参照。
+
+### Triage labels
+
+5つの標準トリアージラベル（`needs-triage`、`needs-info`、`ready-for-agent`、`ready-for-human`、`wontfix`）をそのまま使用する。詳細は `docs/agents/triage-labels.md` を参照。
+
+### Domain docs
+
+単一コンテキスト — リポジトリ直下の `GLOSSARY.md` と `docs/adr/`。詳細は `docs/agents/domain.md` を参照。

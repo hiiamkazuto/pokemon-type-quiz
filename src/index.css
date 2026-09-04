@@ -1,0 +1,222 @@
+:root {
+  --accent: #e3350d;
+  --ink: #2a2a33;
+  --muted: #8a8a96;
+  --line: #e4e4ea;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 32px 16px;
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif;
+  color: var(--ink);
+  background: #fafafa;
+  line-height: 1.6;
+}
+
+.col {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.screen {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  animation: fade 0.18s ease-out;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+/* --- タイトル画面 --- */
+.title-screen {
+  text-align: center;
+  padding: 48px 24px;
+}
+.title-screen .logo {
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--accent);
+  margin: 0 0 12px;
+  letter-spacing: 0.02em;
+}
+.title-screen .howto {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+/* --- クイズ画面 --- */
+.screen-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.question-head {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.field-label {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* お題バッジ・効果チップ・各ボタンは文字サイズ15pxで統一 */
+.badge {
+  display: inline-block;
+  padding: 7px 20px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+}
+.effect-chip {
+  display: inline-block;
+  padding: 5px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 15px;
+  background: #fff;
+  border: 2px solid var(--line);
+  color: var(--ink);
+}
+.effect-chip .mark {
+  font-size: 16px;
+  margin-right: 4px;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 14px 0;
+}
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+.opt {
+  padding: 12px 8px;
+  border-radius: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  transition: border-color 0.1s, box-shadow 0.1s;
+}
+.opt:hover {
+  border-color: rgba(0, 0, 0, 0.4);
+}
+.opt.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(227, 53, 13, 0.35), inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+}
+.opt.correct {
+  border-color: #2aa856;
+  box-shadow: 0 0 0 3px rgba(42, 168, 86, 0.5), inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+}
+.opt.wrongpick {
+  opacity: 0.5;
+}
+.opt:disabled {
+  cursor: default;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.feedback {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.feedback.ok {
+  background: #eafbf0;
+  color: #1c7c3f;
+  border: 2px solid #2aa856;
+}
+.feedback.ng {
+  background: #fdf0f0;
+  color: #c0392b;
+  border: 2px solid #e08a83;
+}
+.feedback-msg {
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+.feedback .reveal {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.feedback-line {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.btn-primary {
+  padding: 12px 28px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+.btn-primary:disabled {
+  background: #d5d5dc;
+  cursor: default;
+}
+.btn-sub {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 2px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+.screen-head .btn-sub {
+  padding: 6px 14px;
+}
+
+/* --- 終了画面 --- */
+.end-screen {
+  text-align: center;
+  padding: 64px 24px;
+}
+.end-screen .btn-sub {
+  margin-top: 16px;
+}
