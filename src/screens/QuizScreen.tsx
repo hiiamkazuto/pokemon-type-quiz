@@ -12,9 +12,9 @@ type Props = {
 
 /** クイズ画面: お題バッジ・効果チップ・選択肢ボタン。答え合わせ後に該当を明かし、「次の問題」で続行、「やめる」で終了画面へ */
 export default function QuizScreen({ 状態, on操作 }: Props) {
-  const q = 状態.問題;
+  const 問題 = 状態.問題;
   const 選択中 = 状態.選択中;
-  const 完全一致 = 状態.答え合わせ済 && 完全一致する(選択中, q.正解);
+  const 完全一致 = 状態.答え合わせ済 && 完全一致する(選択中, 問題.正解);
 
   return (
     <section className="screen quiz-screen">
@@ -28,29 +28,29 @@ export default function QuizScreen({ 状態, on操作 }: Props) {
       <div className="question-head">
         <div className="field">
           <div className="field-label">お題（守る側）</div>
-          <span className="badge" style={{ background: タイプ色[q.お題] }}>
-            {q.お題}
+          <span className="badge" style={{ background: タイプ色[問題.お題] }}>
+            {問題.お題}
           </span>
         </div>
         <div className="field">
           <div className="field-label">攻める側の効果</div>
           <span className="effect-chip">
-            <span className="mark">{効果記号[q.効果]}</span>
-            {効果ラベル[q.効果]}
+            <span className="mark">{効果記号[問題.効果]}</span>
+            {効果ラベル[問題.効果]}
           </span>
         </div>
       </div>
 
       <div className="options">
-        {q.選択肢.map((t) => (
+        {問題.選択肢.map((t) => (
           <button
             key={t}
             type="button"
             className={[
               'opt',
               選択中.includes(t) ? 'selected' : '',
-              状態.答え合わせ済 && q.正解.includes(t) ? 'correct' : '',
-              状態.答え合わせ済 && 選択中.includes(t) && !q.正解.includes(t) ? 'wrongpick' : '',
+              状態.答え合わせ済 && 問題.正解.includes(t) ? 'correct' : '',
+              状態.答え合わせ済 && 選択中.includes(t) && !問題.正解.includes(t) ? 'wrongpick' : '',
             ]
               .filter(Boolean)
               .join(' ')}
@@ -83,17 +83,17 @@ export default function QuizScreen({ 状態, on操作 }: Props) {
         <div className={`feedback ${完全一致 ? 'ok' : 'ng'}`}>
           <div className="feedback-msg">{完全一致 ? '⭕ 正解！' : '❌ はずれ…'}</div>
           <div>
-            お題 {q.お題} に対して{効果記号[q.効果]}
-            {効果ラベル[q.効果]}の攻める側：
+            お題 {問題.お題} に対して{効果記号[問題.効果]}
+            {効果ラベル[問題.効果]}の攻める側：
           </div>
           <div className="reveal">
-            {q.正解.map((t) => (
+            {問題.正解.map((t) => (
               <span key={t} className="badge" style={{ background: タイプ色[t] }}>
                 {t}
               </span>
             ))}
           </div>
-          <div className="feedback-line">「{効果文言[q.効果]}」</div>
+          <div className="feedback-line">「{効果文言[問題.効果]}」</div>
         </div>
       )}
     </section>

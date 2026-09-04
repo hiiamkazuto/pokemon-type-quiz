@@ -18,5 +18,6 @@ export const 効果記号: Record<効果, string> = {
 export const 効果文言: Record<効果, string> = {
   2: '効果はばつぐんだ！',
   0.5: '効果はいまひとつだ',
+  // 「こうかがない」はGLOSSARYではAvoid語だが、公式準拠文言（仕様書指定）のためこのまま使用する
   0: 'こうかがない',
 };

@@ -2,15 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { 効果のタイプを集める, 問題を生成する, 問題を作る } from './generator';
 import { 効果を参照する } from './chart';
 import { 全タイプ, type 問題 } from './types';
-
-/** 同じ値を繰り返す疑似乱数。テストを再現可能にする */
-function 乱数生成器(シード: number): () => number {
-  let 状態 = シード;
-  return () => {
-    状態 = (状態 * 1103515245 + 12345) % 2147483648;
-    return 状態 / 2147483648;
-  };
-}
+import { 乱数生成器 } from './testHelpers';
 
 describe('問題を作る（指定したお題×効果での構成）', () => {
   it('正解は相性表の該当タイプの集合と一致する（みず×ばつぐん=でんき・くさ）', () => {

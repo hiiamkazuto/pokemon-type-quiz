@@ -27,6 +27,8 @@ jobs:
       # baseはvite.config.tsの `base: './'`（相対基準）でサブパス配信に対応済み
       - run: npm run build
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
