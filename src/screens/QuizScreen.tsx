@@ -1,23 +1,26 @@
 import type { 問題, タイプ } from '../quiz/types';
+import type { 操作 } from '../quiz/transition';
+import { 完全一致する } from '../quiz/judge';
 import { タイプ色 } from '../quiz/palette';
-import { 効果ラベル, 効果記号 } from '../quiz/labels';
+import { 効果ラベル, 効果記号, 効果文言 } from '../quiz/labels';
 
 type Props = {
   状態: { 問題: 問題; 選択中: タイプ[]; 答え合わせ済: boolean };
-  onToggle: (t: タイプ) => void;
-  onQuit: () => void;
+  on操作: (操作: 操作) => void;
 };
 
-/** クイズ画面: お題バッジ・効果チップ・選択肢ボタン。終了画面への「やめる」を持つ */
-export default function QuizScreen({ 状態, onToggle, onQuit }: Props) {
+
+/** クイズ画面: お題バッジ・効果チップ・選択肢ボタン。答え合わせ後に該当を明かし、「次の問題」で続行、「やめる」で終了画面へ */
+export default function QuizScreen({ 状態, on操作 }: Props) {
   const q = 状態.問題;
   const 選択中 = 状態.選択中;
+  const 完全一致 = 状態.答え合わせ済 && 完全一致する(選択中, q.正解);
 
   return (
     <section className="screen quiz-screen">
       <div className="screen-head">
         <h1>ポケモンタイプ相性クイズ</h1>
-        <button type="button" className="btn-sub" onClick={onQuit}>
+        <button type="button" className="btn-sub" onClick={() => on操作({ 種類: 'やめる' })}>
           やめる
         </button>
       </div>
@@ -43,9 +46,17 @@ export default function QuizScreen({ 状態, onToggle, onQuit }: Props) {
           <button
             key={t}
             type="button"
-            className={`opt${選択中.includes(t) ? ' selected' : ''}`}
+            className={[
+              'opt',
+              選択中.includes(t) ? 'selected' : '',
+              状態.答え合わせ済 && q.正解.includes(t) ? 'correct' : '',
+              状態.答え合わせ済 && 選択中.includes(t) && !q.正解.includes(t) ? 'wrongpick' : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
             style={{ background: タイプ色[t] }}
-            onClick={() => onToggle(t)}
+            disabled={状態.答え合わせ済}
+            onClick={() => on操作({ 種類: '選択を切り替え', タイプ: t })}
           >
             {t}
           </button>
@@ -53,10 +64,38 @@ export default function QuizScreen({ 状態, onToggle, onQuit }: Props) {
       </div>
 
       <div className="actions">
-        <button type="button" className="btn-primary" disabled={選択中.length === 0}>
+        <button
+          type="button"
+          className="btn-primary"
+          disabled={状態.答え合わせ済 || 選択中.length === 0}
+          onClick={() => on操作({ 種類: '答え合わせ' })}
+        >
           答え合わせ
         </button>
+        {状態.答え合わせ済 && (
+          <button type="button" className="btn-sub" onClick={() => on操作({ 種類: '次の問題' })}>
+            次の問題 →
+          </button>
+        )}
       </div>
+
+      {状態.答え合わせ済 && (
+        <div className={`feedback ${完全一致 ? 'ok' : 'ng'}`}>
+          <div className="feedback-msg">{完全一致 ? '⭕ 正解！' : '❌ はずれ…'}</div>
+          <div>
+            お題 {q.お題} に対して{効果記号[q.効果]}
+            {効果ラベル[q.効果]}の攻める側：
+          </div>
+          <div className="reveal">
+            {q.正解.map((t) => (
+              <span key={t} className="badge" style={{ background: タイプ色[t] }}>
+                {t}
+              </span>
+            ))}
+          </div>
+          <div className="feedback-line">「{効果文言[q.効果]}」</div>
+        </div>
+      )}
     </section>
   );
 }

@@ -85,7 +85,7 @@ h1 {
   letter-spacing: 0.05em;
 }
 
-/* お題バッジ（タイプ色）・効果チップ（白背景・中性色）・選択肢ボタンは文字サイズ15pxで統一 */
+/* お題バッジ・効果チップ・各ボタンは文字サイズ15pxで統一 */
 .badge {
   display: inline-block;
   padding: 7px 20px;
@@ -139,11 +139,52 @@ button {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(227, 53, 13, 0.35), inset 0 -2px 0 rgba(0, 0, 0, 0.15);
 }
+.opt.correct {
+  border-color: #2aa856;
+  box-shadow: 0 0 0 3px rgba(42, 168, 86, 0.5), inset 0 -2px 0 rgba(0, 0, 0, 0.15);
+}
+.opt.wrongpick {
+  opacity: 0.5;
+}
+.opt:disabled {
+  cursor: default;
+}
 
 .actions {
   display: flex;
   gap: 10px;
   margin-top: 16px;
+}
+.feedback {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+.feedback.ok {
+  background: #eafbf0;
+  color: #1c7c3f;
+  border: 2px solid #2aa856;
+}
+.feedback.ng {
+  background: #fdf0f0;
+  color: #c0392b;
+  border: 2px solid #e08a83;
+}
+.feedback-msg {
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+.feedback .reveal {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.feedback-line {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
 }
 .btn-primary {
   padding: 12px 28px;
@@ -151,7 +192,7 @@ button {
   border: none;
   background: var(--accent);
   color: #fff;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
 }
 .btn-primary:disabled {
@@ -164,12 +205,11 @@ button {
   border: 2px solid var(--line);
   background: #fff;
   color: var(--ink);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
 }
 .screen-head .btn-sub {
   padding: 6px 14px;
-  font-size: 13px;
 }
 
 /* --- 終了画面 --- */
