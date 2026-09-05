@@ -82,9 +82,9 @@ h1 {
   text-align: center;
   margin: 8px 0;
 }
-.quiz-hero-badge {
-  font-size: 22px;
-  padding: 10px 34px;
+.badge.quiz-hero-badge {
+  font-size: 26px;
+  padding: 12px 44px;
 }
 .quiz-hero-effect {
   font-size: 18px;
