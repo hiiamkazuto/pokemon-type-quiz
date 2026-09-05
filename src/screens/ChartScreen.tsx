@@ -8,7 +8,7 @@ type Props = {
   onBackToTitle: () => void;
 };
 
-/** 相性表画面: 行＝こうげき側・列＝まもる側の18×18マトリクス。公式相性表と同型（左バンド＝こうげき側・上バンド＝まもり側）。セルタップで行＋列ハイライト */
+/** 相性表画面: 行＝こうげき側・列＝まもる側の18×18マトリクス。セルをタップすると行＋列をハイライトして組合せを読み上げる */
 export default function ChartScreen({ onBackToTitle }: Props) {
   const [選択攻, set選択攻] = useState<タイプ | null>(null);
   const [選択守, set選択守] = useState<タイプ | null>(null);
@@ -23,18 +23,18 @@ export default function ChartScreen({ onBackToTitle }: Props) {
           もどる
         </button>
       </div>
-      <div className="chart-wrap">
-        <div className="chart-leftband">こうげき側のタイプ</div>
-        <div className="chart-scroll">
-          <p className="chart-topband" aria-hidden>
-            まもり側のタイプ
-          </p>
-          <table className="chart-matrix">
-            <thead>
-              <tr>
-                <th className="chart-corner" aria-hidden>
-                  <span className="chart-corner-slash" />
-                </th>
+      <p className="chart-note">行＝こうげき側 ／ 列＝まもる側</p>
+
+      <div className="chart-scroll">
+        <table className="chart-matrix">
+          <thead>
+            <tr>
+              <th className="chart-corner" title="行＝こうげき側／列＝まもる側">
+                <span className="chart-corner-inner">
+                  <span className="chart-corner-def">守</span>
+                  <span className="chart-corner-atk">攻</span>
+                </span>
+              </th>
               {全タイプ.map((守) => (
                 <th key={守} scope="col" className="chart-colhead" style={{ background: タイプ色[守] }}>
                   {守}
@@ -88,7 +88,6 @@ export default function ChartScreen({ onBackToTitle }: Props) {
             ))}
           </tbody>
         </table>
-        </div>
       </div>
 
       {十字 && 選択効果 !== null && (
