@@ -1,9 +1,10 @@
 type Props = {
   onStart: () => void;
+  onChart: () => void;
 };
 
-/** タイトル画面: アプリ名と遊び方の概要、クイズ画面への入り口 */
-export default function TitleScreen({ onStart }: Props) {
+/** タイトル画面: アプリ名と遊び方の概要、クイズ画面・相性表画面への入り口 */
+export default function TitleScreen({ onStart, onChart }: Props) {
   return (
     <section className="screen title-screen">
       <p className="logo">ポケモンタイプ相性クイズ</p>
@@ -14,6 +15,9 @@ export default function TitleScreen({ onStart }: Props) {
       </p>
       <button type="button" className="btn-primary" onClick={onStart}>
         ▶ スタート
+      </button>
+      <button type="button" className="btn-sub title-chart-btn" onClick={onChart}>
+        相性表をみる
       </button>
     </section>
   );

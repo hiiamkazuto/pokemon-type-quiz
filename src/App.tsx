@@ -4,13 +4,23 @@ import type { 画面状態 } from './quiz/types';
 import TitleScreen from './screens/TitleScreen';
 import QuizScreen from './screens/QuizScreen';
 import EndScreen from './screens/EndScreen';
+import ChartScreen from './screens/ChartScreen';
 
 export default function App() {
   const [画面, set画面] = useState<画面状態>('タイトル画面');
   const 操作する = (操作: 操作) => set画面((現) => 遷移する(現, 操作));
 
   if (画面 === 'タイトル画面') {
-    return <TitleScreen onStart={() => 操作する({ 種類: 'スタート' })} />;
+    return (
+      <TitleScreen
+        onStart={() => 操作する({ 種類: 'スタート' })}
+        onChart={() => 操作する({ 種類: '相性表をみる' })}
+      />
+    );
+  }
+
+  if (画面 === '相性表画面') {
+    return <ChartScreen onBackToTitle={() => 操作する({ 種類: 'タイトルへもどる' })} />;
   }
 
   if (画面 === '終了画面') {
