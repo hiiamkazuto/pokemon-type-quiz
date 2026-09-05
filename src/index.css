@@ -425,6 +425,15 @@ button {
   box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.9);
 }
 
+/* スマホ幅ではまもる側の列見出しを細くし、全データ列の幅を縮める（table-layout: fixed により列見出しの幅が列幅になる） */
+@media (max-width: 700px) {
+  .chart-colhead {
+    width: 28px;
+    font-size: 9px;
+    padding: 2px 1px;
+  }
+}
+
 /* --- 終了画面 --- */
 .end-screen {
   text-align: center;
