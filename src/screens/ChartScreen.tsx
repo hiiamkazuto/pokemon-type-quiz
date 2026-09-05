@@ -30,9 +30,11 @@ export default function ChartScreen({ onBackToTitle }: Props) {
           <thead>
             <tr>
               <th className="chart-corner" title="行＝こうげき側／列＝まもる側">
-                <span className="chart-corner-inner">
-                  <span className="chart-corner-def">守</span>
-                  <span className="chart-corner-atk">攻</span>
+                <span className="chart-corner-atk" aria-hidden>
+                  攻
+                </span>
+                <span className="chart-corner-def" aria-hidden>
+                  守
                 </span>
               </th>
               {全タイプ.map((守) => (
