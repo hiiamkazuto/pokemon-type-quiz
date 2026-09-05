@@ -73,19 +73,35 @@ h1 {
   align-items: center;
   margin-bottom: 16px;
 }
-.question-head {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  flex-wrap: wrap;
+.quiz-step {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 8px;
 }
-.field-label {
+.quiz-hero {
+  text-align: center;
+  margin: 8px 0;
+}
+.quiz-hero-badge {
+  font-size: 22px;
+  padding: 10px 34px;
+}
+.quiz-hero-effect {
+  font-size: 18px;
+  margin: 8px 0 0;
+}
+.quiz-sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.quiz-hint {
+  margin: 8px 0 0;
   font-size: 12px;
   color: var(--muted);
-  letter-spacing: 0.05em;
 }
 
-/* お題バッジ・効果チップ・各ボタンは文字サイズ15pxで統一 */
+/* お題バッジ・各ボタンは文字サイズ15pxで統一 */
 .badge {
   display: inline-block;
   padding: 7px 20px;
@@ -96,24 +112,48 @@ h1 {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
 }
-.effect-chip {
+.effect-pill {
   display: inline-block;
-  padding: 5px 18px;
+  padding: 2px 14px;
+  margin: 0 2px;
   border-radius: 999px;
-  font-weight: 700;
-  font-size: 15px;
   background: #fff;
-  border: 2px solid var(--line);
-  color: var(--ink);
+  border: 2px solid var(--ink);
+  font-weight: 900;
+  font-size: 19px;
+  white-space: nowrap;
 }
-.effect-chip .mark {
-  font-size: 16px;
+.effect-mark {
   margin-right: 4px;
+  font-size: 20px;
+}
+.effect-pill.effect-sm {
+  font-size: 14px;
+  padding: 1px 10px;
+}
+.effect-sm .effect-mark {
+  font-size: 15px;
+}
+/* 効果別色分け */
+.fx-super {
+  border-color: #e3350d;
+  background: #fdeceb;
+  color: #c22e0b;
+}
+.fx-weak {
+  border-color: #8a8a96;
+  background: #f2f2f6;
+  color: #55555f;
+}
+.fx-none {
+  border-color: #2a2a33;
+  background: #2a2a33;
+  color: #fff;
 }
 
 .options {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin: 14px 0;
 }
@@ -122,10 +162,11 @@ button {
   cursor: pointer;
 }
 .opt {
-  padding: 12px 8px;
+  position: relative;
+  padding: 14px 4px;
   border-radius: 10px;
   border: 2px solid rgba(0, 0, 0, 0.12);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
@@ -185,6 +226,27 @@ button {
   margin-top: 8px;
   color: var(--muted);
   font-size: 13px;
+}
+.feedback-odai {
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.checkbadge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #e3350d;
+  color: #e3350d;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 20px;
+  text-align: center;
+  text-shadow: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 .btn-primary {
   padding: 12px 28px;

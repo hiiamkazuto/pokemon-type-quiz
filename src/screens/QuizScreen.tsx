@@ -10,11 +10,13 @@ type Props = {
 };
 
 
-/** クイズ画面: お題バッジ・効果チップ・選択肢ボタン。答え合わせ後に該当を明かし、「次の問題」で続行、「やめる」で終了画面へ */
+/** クイズ画面: お題センターヒーロー・効果ピル・3列選択肢。答え合わせ後に該当を明かし、「次の問題」で続行、「やめる」で終了画面へ */
 export default function QuizScreen({ 状態, on操作 }: Props) {
   const 問題 = 状態.問題;
   const 選択中 = 状態.選択中;
   const 完全一致 = 状態.答え合わせ済 && 完全一致する(選択中, 問題.正解);
+  const 効果クラス =
+    問題.効果 === 2 ? 'fx-super' : 問題.効果 === 0.5 ? 'fx-weak' : 'fx-none';
 
   return (
     <section className="screen quiz-screen">
@@ -25,21 +27,21 @@ export default function QuizScreen({ 状態, on操作 }: Props) {
         </button>
       </div>
 
-      <div className="question-head">
-        <div className="field">
-          <div className="field-label">お題（守る側）</div>
-          <span className="badge" style={{ background: タイプ色[問題.お題] }}>
-            {問題.お題}
-          </span>
-        </div>
-        <div className="field">
-          <div className="field-label">攻める側の効果</div>
-          <span className="effect-chip">
-            <span className="mark">{効果記号[問題.効果]}</span>
+      <p className="quiz-step">こうげきする側のタイプを選ぼう</p>
+      <div className="quiz-hero">
+        <span className="badge quiz-hero-badge" style={{ background: タイプ色[問題.お題] }}>
+          {問題.お題}
+        </span>
+        <p className="quiz-hero-effect">
+          をこうげきして
+          <span className={`effect-pill ${効果クラス}`}>
+            <span className="effect-mark">{効果記号[問題.効果]}</span>
             {効果ラベル[問題.効果]}
           </span>
-        </div>
+          のタイプは？
+        </p>
       </div>
+      <p className="quiz-sub">当てはまるものをすべて選ぼう（複数可）</p>
 
       <div className="options">
         {問題.選択肢.map((t) => (
@@ -55,10 +57,16 @@ export default function QuizScreen({ 状態, on操作 }: Props) {
               .filter(Boolean)
               .join(' ')}
             style={{ background: タイプ色[t] }}
+            aria-pressed={選択中.includes(t)}
             disabled={状態.答え合わせ済}
             onClick={() => on操作({ 種類: '選択を切り替え', タイプ: t })}
           >
             {t}
+            {選択中.includes(t) && (
+              <span className="checkbadge" aria-hidden>
+                ✓
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -78,13 +86,23 @@ export default function QuizScreen({ 状態, on操作 }: Props) {
           </button>
         )}
       </div>
+      {選択中.length === 0 && !状態.答え合わせ済 && (
+        <p className="quiz-hint">1つ以上選ぶと答え合わせできます</p>
+      )}
 
       {状態.答え合わせ済 && (
         <div className={`feedback ${完全一致 ? 'ok' : 'ng'}`}>
           <div className="feedback-msg">{完全一致 ? '⭕ 正解！' : '❌ はずれ…'}</div>
           <div>
-            お題 {問題.お題} に対して{効果記号[問題.効果]}
-            {効果ラベル[問題.効果]}の攻める側：
+            <span className="badge feedback-odai" style={{ background: タイプ色[問題.お題] }}>
+              {問題.お題}
+            </span>
+            に対して
+            <span className={`effect-pill effect-sm ${効果クラス}`}>
+              <span className="effect-mark">{効果記号[問題.効果]}</span>
+              {効果ラベル[問題.効果]}
+            </span>
+            のこうげき側：
           </div>
           <div className="reveal">
             {問題.正解.map((t) => (
