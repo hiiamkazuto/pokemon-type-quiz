@@ -8,7 +8,7 @@ type Props = {
   onBackToTitle: () => void;
 };
 
-/** 相性表画面: 行＝こうげき側・列＝まもる側の18×18マトリクス。セルをタップすると行＋列をハイライトして組合せを読み上げる */
+/** 相性表画面: 行＝まもる側・列＝こうげき側の18×18マトリクス。セルをタップすると行＋列をハイライトして組合せを読み上げる */
 export default function ChartScreen({ onBackToTitle }: Props) {
   const [選択攻, set選択攻] = useState<タイプ | null>(null);
   const [選択守, set選択守] = useState<タイプ | null>(null);
@@ -23,49 +23,49 @@ export default function ChartScreen({ onBackToTitle }: Props) {
           もどる
         </button>
       </div>
-      <p className="chart-note">行＝こうげき側 ／ 列＝まもる側</p>
+      <p className="chart-note">行＝まもる側 ／ 列＝こうげき側</p>
 
       <div className="chart-scroll">
         <table className="chart-matrix">
           <thead>
             <tr>
-              <th className="chart-corner" title="行＝こうげき側／列＝まもる側">
+              <th className="chart-corner" title="行＝まもる側／列＝こうげき側">
                 <span className="chart-corner-inner">
-                  <span className="chart-corner-def">守</span>
-                  <span className="chart-corner-atk">攻</span>
+                  <span className="chart-corner-def">攻</span>
+                  <span className="chart-corner-atk">守</span>
                 </span>
               </th>
-              {全タイプ.map((守) => (
-                <th key={守} scope="col" className="chart-colhead" style={{ background: タイプ色[守] }}>
-                  {守}
+              {全タイプ.map((攻) => (
+                <th key={攻} scope="col" className="chart-colhead" style={{ background: タイプ色[攻] }}>
+                  {攻}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {全タイプ.map((攻) => (
-              <tr key={攻} className={攻 === 選択攻 ? 'pinned' : ''}>
+            {全タイプ.map((守) => (
+              <tr key={守} className={守 === 選択守 ? 'pinned' : ''}>
                 <th
                   scope="row"
                   className="chart-rowhead"
-                  style={{ background: タイプ色[攻] }}
-                  aria-pressed={攻 === 選択攻}
+                  style={{ background: タイプ色[守] }}
+                  aria-pressed={守 === 選択守}
                   onClick={() => {
-                    set選択攻(選択攻 === 攻 ? null : 攻);
-                    set選択守(null);
+                    set選択守(選択守 === 守 ? null : 守);
+                    set選択攻(null);
                   }}
                 >
-                  {攻}
+                  {守}
                 </th>
-                {全タイプ.map((守) => {
+                {全タイプ.map((攻) => {
                   const 効果 = 効果を参照する(攻, 守);
                   const 選択セル = 十字 && 攻 === 選択攻 && 守 === 選択守;
                   return (
                     <td
-                      key={守}
+                      key={攻}
                       className={[
                         効果 === 2 ? 'fx-super' : 効果 === 0.5 ? 'fx-weak' : 効果 === 0 ? 'fx-none' : 'fx-plain',
-                        十字 && 守 === 選択守 ? 'pinned-col' : '',
+                        十字 && 攻 === 選択攻 ? 'pinned-col' : '',
                         選択セル ? 'pinned-cross' : '',
                       ]
                         .filter(Boolean)
