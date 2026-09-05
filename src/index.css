@@ -281,11 +281,6 @@ button {
   display: block;
   margin: 12px auto 0;
 }
-.chart-note {
-  color: var(--muted);
-  font-size: 13px;
-  margin: 4px 0 12px;
-}
 .chart-legend {
   font-size: 12px;
   color: var(--muted);
@@ -294,7 +289,9 @@ button {
 .chart-scroll {
   overflow-x: auto;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 0 10px 10px 10px;
+  border-left: none;
+  flex: 1;
 }
 .chart-matrix {
   table-layout: fixed;
@@ -314,33 +311,41 @@ button {
   background: #f4f4f8;
   position: sticky;
 }
+.chart-wrap {
+  display: flex;
+  align-items: stretch;
+}
+.chart-leftband {
+  writing-mode: vertical-rl;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  padding: 12px 7px;
+  border-radius: 10px 0 0 10px;
+  flex: none;
+}
+.chart-topband {
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  margin: 0;
+  border-radius: 0 10px 0 0;
+}
 .chart-corner {
   width: 64px;
   background:
-    linear-gradient(to top right, transparent calc(50% - 1.5px), #fff calc(50% - 1.5px), #fff calc(50% + 1.5px), transparent calc(50% + 1.5px)),
-    var(--ink);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 900;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    linear-gradient(to top right, transparent calc(50% - 1px), #d5d5dc calc(50% - 1px), #d5d5dc calc(50% + 1px), transparent calc(50% + 1px)),
+    #fff;
   position: sticky;
   left: 0;
   z-index: 3;
 }
-.chart-corner-inner {
-  position: relative;
-  height: 100%;
-  min-height: 56px;
-}
-.chart-corner-def {
-  position: absolute;
-  top: 6px;
-  right: 10px;
-}
-.chart-corner-atk {
-  position: absolute;
-  bottom: 6px;
-  left: 10px;
+.chart-corner-slash {
+  display: block;
 }
 .chart-matrix thead th {
   height: 56px;
