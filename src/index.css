@@ -337,12 +337,12 @@ button {
 }
 .chart-corner-atk {
   position: absolute;
-  top: 6px;
+  bottom: 6px;
   left: 10px;
 }
 .chart-corner-def {
   position: absolute;
-  bottom: 6px;
+  top: 6px;
   right: 10px;
 }
 .chart-matrix thead th {
