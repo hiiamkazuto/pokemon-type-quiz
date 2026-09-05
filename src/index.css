@@ -316,9 +316,7 @@ button {
 }
 .chart-matrix thead th.chart-corner {
   width: 64px;
-  background:
-    linear-gradient(to top right, transparent calc(50% - 1.5px), #fff calc(50% - 1.5px), #fff calc(50% + 1.5px), transparent calc(50% + 1.5px)),
-    var(--ink);
+  background: var(--ink);
   color: #fff;
   font-size: 14px;
   font-weight: 900;
@@ -326,6 +324,16 @@ button {
   position: sticky;
   left: 0;
   z-index: 3;
+}
+.chart-corner-slash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  font-weight: 700;
+  opacity: 0.75;
+  text-shadow: none;
 }
 .chart-corner-atk {
   position: absolute;

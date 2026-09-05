@@ -33,6 +33,9 @@ export default function ChartScreen({ onBackToTitle }: Props) {
                 <span className="chart-corner-atk" aria-hidden>
                   攻
                 </span>
+                <span className="chart-corner-slash" aria-hidden>
+                  ＼
+                </span>
                 <span className="chart-corner-def" aria-hidden>
                   守
                 </span>
